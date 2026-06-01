@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifirma — Painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #1D9E75;
+  --green-dark: #0F6E56;
+  --green-deeper: #085041;
+  --green-light: #E1F5EE;
+  --green-mid: #9FE1CB;
+  --ink: #0e1512;
+  --ink-2: #1a2820;
+  --paper: #f5faf8;
+  --white: #ffffff;
+  --muted: #6b8a7e;
+  --border: #d8ede7;
+  --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Sora', sans-serif;
+  --sidebar-w: 240px;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── TELA DE LOGIN ─────────────────────────────────────── */
+#tela-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(29,158,117,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29,158,117,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.login-glow {
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(29,158,117,0.15) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(12px);
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.login-logo-mark {
+  width: 38px; height: 38px;
+  background: var(--green);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.login-logo-mark svg { width: 20px; height: 20px; }
+
+.login-logo-name {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 900;
+  color: white; letter-spacing: -0.5px;
+}
+
+.login-logo-name span { color: var(--green-mid); }
+
+.login-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem; font-weight: 900;
+  color: white; letter-spacing: -0.8px;
+  margin-bottom: 6px;
+}
+
+.login-sub {
+  font-size: 13px; color: rgba(255,255,255,0.4);
+  margin-bottom: 2rem;
+}
+
+.form-group { margin-bottom: 1rem; }
+
+.form-label {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  font-family: var(--font-body);
+  font-size: 14px; color: white;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.form-input::placeholder { color: rgba(255,255,255,0.25); }
+.form-input:focus {
+  border-color: var(--green);
+  background: rgba(29,158,117,0.08);
+}
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background: var(--green);
+  color: white; border: none;
+  border-radius: 9px;
+  font-family: var(--font-body);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 0.5rem;
+}
+
+.btn-login:hover { background: var(--green-dark); transform: translateY(-1px); }
+.btn-login:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.login-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 1.25rem 0;
+}
+
+.login-divider::before, .login-divider::after {
+  content: ''; flex: 1;
+  height: 1px; background: rgba(255,255,255,0.08);
+}
+
+.login-divider span { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+.btn-google {
+  width: 100%;
+  padding: 11px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  color: white;
+  font-family: var(--font-body);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background 0.2s;
+}
+
+.btn-google:hover { background: rgba(255,255,255,0.1); }
+
+.login-toggle {
+  text-align: center; margin-top: 1.25rem;
+  font-size: 13px; color: rgba(255,255,255,0.35);
+}
+
+.login-toggle a {
+  color: var(--green-mid); cursor: pointer; text-decoration: none;
+}
+
+.login-toggle a:hover { text-decoration: underline; }
+
+.login-msg {
+  margin-top: 1rem; padding: 10px 14px;
+  border-radius: 8px; font-size: 13px;
+  display: none;
+}
+
+.login-msg.erro { background: rgba(220,50,50,0.15); color: #ff8080; border: 1px solid rgba(220,50,50,0.2); display: block; }
+.login-msg.ok   { background: rgba(29,158,117,0.15); color: var(--green-mid); border: 1px solid rgba(29,158,117,0.2); display: block; }
+
+/* ── APP PRINCIPAL ─────────────────────────────────────── */
+#tela-app { display: none; height: 100vh; flex-direction: column; }
+#tela-app.ativo { display: flex; }
+
+/* TOPBAR */
+.topbar {
+  height: 56px; flex-shrink: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 1.5rem; gap: 1rem;
+  position: sticky; top: 0; z-index: 50;
+}
+
+.topbar-logo {
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: 900;
+  color: var(--ink); letter-spacing: -0.3px;
+  text-decoration: none; flex-shrink: 0;
+}
+
+.topbar-logo span { color: var(--green); }
+
+.topbar-spacer { flex: 1; }
+
+.topbar-plano {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--green-light); color: var(--green-deeper);
+}
+
+.topbar-plano.pro { background: #f0ebff; color: #5b3d9e; }
+
+.topbar-uso {
+  font-size: 12px; color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+
+.uso-bar {
+  width: 60px; height: 4px;
+  background: var(--border); border-radius: 2px; overflow: hidden;
+}
+
+.uso-fill {
+  height: 100%; background: var(--green);
+  border-radius: 2px; transition: width 0.3s;
+}
+
+.uso-fill.alerta { background: #e05c4a; }
+
+.btn-sair {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: var(--font-body);
+  font-size: 12px; color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sair:hover { border-color: var(--green); color: var(--green-dark); }
+
+/* BODY DO APP */
+.app-body {
+  flex: 1; overflow: hidden;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.sidebar-label {
+  font-size: 10px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: 1.5px; padding: 0 8px;
+  margin-top: 1rem; margin-bottom: 4px;
+}
+
+.sidebar-label:first-child { margin-top: 0; }
+
+.sidebar-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+  border: none; background: none; width: 100%;
+  text-align: left; font-family: var(--font-body);
+}
+
+.sidebar-item svg { flex-shrink: 0; opacity: 0.6; }
+.sidebar-item:hover { background: var(--paper); color: var(--ink); }
+.sidebar-item.ativo { background: var(--green-light); color: var(--green-deeper); font-weight: 500; }
+.sidebar-item.ativo svg { opacity: 1; }
+
+/* MAIN */
+.main {
+  flex: 1; overflow-y: auto;
+  padding: 1.75rem 2rem;
+}
+
+/* PAINEL BUSCA */
+.search-panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-panel-title {
+  font-family: var(--font-display);
+  font-size: 1rem; font-weight: 900;
+  color: var(--ink); margin-bottom: 1.25rem;
+  letter-spacing: -0.3px;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 10px; margin-bottom: 1rem;
+}
+
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+
+.filter-label {
+  font-size: 10px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;
+}
+
+.filter-input, .filter-select {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px; color: var(--ink);
+  background: var(--paper);
+  outline: none; transition: border-color 0.2s, background 0.2s;
+}
+
+.filter-input:focus, .filter-select:focus {
+  border-color: var(--green);
+  background: var(--white);
+}
+
+.filter-input::placeholder { color: #b0c4bc; }
+
+.filters-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 10px; align-items: flex-end;
+}
+
+.btn-buscar {
+  padding: 9px 24px;
+  background: var(--green);
+  color: white; border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 7px;
+}
+
+.btn-buscar:hover { background: var(--green-dark); transform: translateY(-1px); }
+.btn-buscar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* RESULTADOS */
+.results-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.results-count {
+  font-size: 13px; color: var(--muted);
+}
+
+.results-count strong { color: var(--ink); font-weight: 600; }
+
+.btn-exportar {
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: var(--font-body);
+  font-size: 12px; color: var(--muted);
+  cursor: pointer; display: flex; align-items: center; gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-exportar:hover { border-color: var(--green); color: var(--green-dark); }
+.btn-exportar.bloqueado { opacity: 0.4; cursor: not-allowed; }
+
+/* TABELA */
+.table-wrap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+thead tr { background: var(--ink); }
+
+thead th {
+  padding: 11px 14px; text-align: left;
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-top: 1px solid var(--border);
+  transition: background 0.12s;
+  cursor: pointer;
+}
+
+tbody tr:hover { background: #f0faf6; }
+
+tbody td {
+  padding: 11px 14px; color: var(--ink);
+  vertical-align: middle;
+}
+
+.td-razao { font-weight: 500; max-width: 200px; }
+.td-razao small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px;
+  white-space: nowrap;
+}
+
+.status-ativa    { background: #e8faf3; color: #0a7a52; }
+.status-baixada  { background: #fef0ef; color: #a32d2d; }
+.status-suspensa { background: #fff8e6; color: #856404; }
+.status-inapta   { background: #fef0ef; color: #a32d2d; }
+.status-default  { background: var(--paper); color: var(--muted); }
+
+.td-lock {
+  color: var(--muted); font-size: 11px;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* PAGINAÇÃO */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-top: 1.25rem; padding-bottom: 1rem;
+}
+
+.page-btn {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border); border-radius: 7px;
+  background: var(--white); color: var(--muted);
+  font-family: var(--font-body); font-size: 13px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+
+.page-btn:hover { border-color: var(--green); color: var(--green-dark); }
+.page-btn.ativo { background: var(--green); border-color: var(--green); color: white; }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* LOADING */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 3rem; color: var(--muted); font-size: 13px;
+}
+
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ESTADO VAZIO */
+.empty-state {
+  text-align: center; padding: 4rem 2rem; color: var(--muted);
+}
+
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+.empty-title { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.empty-desc { font-size: 13px; }
+
+/* MODAL DETALHE */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(14,21,18,0.6);
+  z-index: 200; display: none;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.aberto { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: 18px;
+  width: 100%; max-width: 640px;
+  max-height: 85vh; overflow-y: auto;
+  animation: fadeUp 0.25s ease both;
+}
+
+.modal-header {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; position: sticky; top: 0; background: var(--white);
+  border-radius: 18px 18px 0 0;
+}
+
+.modal-cnpj { font-size: 11px; color: var(--muted); margin-bottom: 3px; font-family: monospace; }
+.modal-nome { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.modal-fantasia { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.modal-close {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--border); background: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); flex-shrink: 0; transition: all 0.2s;
+}
+
+.modal-close:hover { background: var(--paper); color: var(--ink); }
+
+.modal-body { padding: 1.25rem 1.5rem 1.5rem; }
+
+.modal-section { margin-bottom: 1.5rem; }
+
+.modal-section-title {
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.modal-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modal-field {
+  background: var(--paper); border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.modal-field-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+.modal-field-value { font-size: 13px; font-weight: 500; color: var(--ink); }
+.modal-field-value.lock { color: var(--muted); font-size: 12px; display: flex; align-items: center; gap: 4px; }
+
+.socio-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-top: 1px solid var(--border);
+}
+
+.socio-row:first-child { border-top: none; }
+
+.socio-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--green-light); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--green-deeper);
+}
+
+.socio-nome { font-size: 13px; font-weight: 500; color: var(--ink); }
+.socio-qual { font-size: 11px; color: var(--muted); }
+
+/* UPGRADE BANNER */
+.upgrade-banner {
+  background: linear-gradient(135deg, var(--green-light), #d4f0e5);
+  border: 1px solid rgba(29,158,117,0.25);
+  border-radius: 12px; padding: 1rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.5rem;
+}
+
+.upgrade-text { font-size: 13px; color: var(--green-deeper); }
+.upgrade-text strong { font-weight: 600; }
+
+.btn-upgrade {
+  padding: 8px 18px; background: var(--green);
+  color: white; border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.2s;
+  text-decoration: none; display: inline-block;
+}
+
+.btn-upgrade:hover { background: var(--green-dark); }
+
+/* ALERT LIMITE */
+.alert-limite {
+  background: #fef0ef; border: 1px solid rgba(220,80,74,0.2);
+  border-radius: 10px; padding: 1rem 1.25rem;
+  color: #a32d2d; font-size: 13px; margin-bottom: 1rem;
+  display: none;
+}
+
+.alert-limite.visivel { display: block; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .filters-grid { grid-template-columns: 1fr 1fr; }
+  .filters-row2 { grid-template-columns: 1fr 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 1rem; }
+  .modal-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TELA DE LOGIN ──────────────────────────────────────────── -->
+<div id="tela-login">
+  <div class="login-bg"></div>
+  <div class="login-glow"></div>
+
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="11" height="14" rx="2" stroke="white" stroke-width="1.4"/><path d="M4.5 7h6M4.5 10h6M4.5 13h3.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/><circle cx="15" cy="15" r="4" fill="rgba(255,255,255,0.2)"/><path d="M13.2 15l1.2 1.2 2-2" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="login-logo-name">Veri<span>firma</span></div>
+    </div>
+
+    <div id="form-login">
+      <div class="login-title">Bom te ver.</div>
+      <div class="login-sub">Entre na sua conta para continuar</div>
+
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" id="login-email" class="form-input" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" id="login-senha" class="form-input" placeholder="••••••••">
+      </div>
+
+      <button class="btn-login" id="btn-entrar" onclick="fazerLogin()">Entrar</button>
+
+      <div class="login-divider"><span>ou</span></div>
+
+      <button class="btn-google" onclick="loginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+        Continuar com Google
+      </button>
+
+      <div id="login-msg" class="login-msg"></div>
+
+      <div class="login-toggle">
+        Não tem conta? <a onclick="mostrarCadastro()">Criar conta grátis</a>
+      </div>
+    </div>
+
+    <div id="form-cadastro" style="display:none">
+      <div class="login-title">Criar conta</div>
+      <div class="login-sub">Grátis, sem cartão de crédito</div>
+
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" id="cad-email" class="form-input" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" id="cad-senha" class="form-input" placeholder="mínimo 6 caracteres">
+      </div>
+
+      <button class="btn-login" onclick="fazerCadastro()">Criar conta</button>
+
+      <div id="cadastro-msg" class="login-msg"></div>
+
+      <div class="login-toggle">
+        Já tem conta? <a onclick="mostrarLogin()">Entrar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP PRINCIPAL ──────────────────────────────────────────── -->
+<div id="tela-app">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="/" class="topbar-logo">Veri<span>firma</span></a>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-uso" id="topbar-uso" style="display:none">
+      <span id="uso-texto">0/10 hoje</span>
+      <div class="uso-bar">
+        <div class="uso-fill" id="uso-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <span class="topbar-plano" id="topbar-plano">Grátis</span>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </header>
+
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-label">Menu</div>
+      <button class="sidebar-item ativo" onclick="mostrarAba('busca', this)">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Buscar empresas
+      </button>
+      <button class="sidebar-item" onclick="mostrarAba('exportar', this)">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 11v2h11v-2M7.5 2v8M4.5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Exportar CSV
+      </button>
+
+      <div class="sidebar-label" style="margin-top:auto">Conta</div>
+      <button class="sidebar-item" onclick="window.open('/contratacao.html')">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="2.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h5M5 9h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Ver planos
+      </button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ABA BUSCA -->
+      <div id="aba-busca">
+
+        <!-- Banner upgrade (só grátis) -->
+        <div class="upgrade-banner" id="banner-upgrade" style="display:none">
+          <div class="upgrade-text">
+            <strong>Plano Grátis</strong> — telefone, email e exportação disponíveis no Pro.
+          </div>
+          <a href="/contratacao.html" class="btn-upgrade">Ver planos</a>
+        </div>
+
+        <!-- Alert limite -->
+        <div class="alert-limite" id="alert-limite">
+          Você atingiu o limite de consultas gratuitas de hoje. Faça upgrade ou volte amanhã.
+        </div>
+
+        <!-- Painel de busca -->
+        <div class="search-panel">
+          <div class="search-panel-title">Buscar empresas</div>
+
+          <div class="filters-grid">
+            <div class="filter-group">
+              <div class="filter-label">Razão social</div>
+              <input type="text" id="f-razao" class="filter-input" placeholder="Nome da empresa...">
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">CNPJ</div>
+              <input type="text" id="f-cnpj" class="filter-input" placeholder="00.000.000/0001-00">
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">UF</div>
+              <select id="f-uf" class="filter-select" onchange="carregarMunicipios()">
+                <option value="">Todos os estados</option>
+                <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                <option>SP</option><option>SE</option><option>TO</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Município</div>
+              <select id="f-municipio" class="filter-select">
+                <option value="">Todos</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filters-row2">
+            <div class="filter-group">
+              <div class="filter-label">Situação</div>
+              <select id="f-situacao" class="filter-select">
+                <option value="">Todas</option>
+                <option value="02">Ativa</option>
+                <option value="03">Suspensa</option>
+                <option value="04">Inapta</option>
+                <option value="08">Baixada</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">CNAE</div>
+              <input type="text" id="f-cnae" class="filter-input" placeholder="Código CNAE...">
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Resultados</div>
+              <select id="f-por-pagina" class="filter-select">
+                <option value="25">25 por página</option>
+                <option value="50" selected>50 por página</option>
+                <option value="100">100 por página</option>
+              </select>
+            </div>
+            <div></div>
+            <div class="filter-group">
+              <div class="filter-label" style="opacity:0">.</div>
+              <button class="btn-buscar" id="btn-buscar" onclick="buscar(1)">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="white" stroke-width="1.5"/><path d="M9.5 9.5l2.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultados -->
+        <div id="area-resultados">
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <div class="empty-title">Pronto para buscar</div>
+            <div class="empty-desc">Use os filtros acima e clique em Buscar</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA EXPORTAR -->
+      <div id="aba-exportar" style="display:none">
+        <div class="search-panel">
+          <div class="search-panel-title">Exportar CSV</div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:1rem">
+            Aplique os filtros e exporte uma lista completa em CSV. Disponível nos planos Pro e Business.
+          </p>
+          <div id="export-bloqueado" style="display:none">
+            <div class="upgrade-banner">
+              <div class="upgrade-text"><strong>Exportação bloqueada</strong> — disponível no plano Pro.</div>
+              <a href="/contratacao.html" class="btn-upgrade">Fazer upgrade</a>
+            </div>
+          </div>
+          <div id="export-form">
+            <p style="font-size:13px;color:var(--muted)">Use os mesmos filtros da busca. O arquivo exportado inclui todos os campos incluindo telefone e email.</p>
+            <button class="btn-buscar" style="margin-top:1rem" onclick="exportar()">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 10v2h10v-2M7 2v7M4.5 6.5l2.5 2.5 2.5-2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-cnpj" id="modal-cnpj"></div>
+        <div class="modal-nome" id="modal-nome"></div>
+        <div class="modal-fantasia" id="modal-fantasia"></div>
+      </div>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://esrlofmcnfhgcbtraril.supabase.co'
+const SUPABASE_KEY  = 'sb_publishable_RIOsDpo1xaTCgrZ7s99I0A_fPgjxN8N'
+const API_URL       = 'https://verifirma-backend-production.up.railway.app'  // ex: https://verifirma-backend.up.railway.app
+
+const { createClient } = supabase
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+let token = null
+let paginaAtual = 1
+let totalPaginas = 1
+let planoAtual = 'gratis'
+let ultimosFiltros = {}
+
+// ── AUTH ────────────────────────────────────────────────────────
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (session) {
+    token = session.access_token
+    await iniciarApp()
+  } else {
+    token = null
+    document.getElementById('tela-login').style.display = 'flex'
+    document.getElementById('tela-app').classList.remove('ativo')
+  }
+})
+
+async function fazerLogin() {
+  const email = document.getElementById('login-email').value
+  const senha = document.getElementById('login-senha').value
+  const btn = document.getElementById('btn-entrar')
+  btn.disabled = true; btn.textContent = 'Entrando...'
+
+  const { error } = await sb.auth.signInWithPassword({ email, password: senha })
+  if (error) {
+    mostrarMsg('login-msg', 'E-mail ou senha incorretos.', 'erro')
+  }
+  btn.disabled = false; btn.textContent = 'Entrar'
+}
+
+async function fazerCadastro() {
+  const email = document.getElementById('cad-email').value
+  const senha = document.getElementById('cad-senha').value
+
+  const { error } = await sb.auth.signUp({ email, password: senha })
+  if (error) {
+    mostrarMsg('cadastro-msg', error.message, 'erro')
+  } else {
+    mostrarMsg('cadastro-msg', 'Conta criada! Verifique seu e-mail para confirmar.', 'ok')
+  }
+}
+
+async function loginGoogle() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  })
+}
+
+function sair() {
+  sb.auth.signOut()
+}
+
+function mostrarCadastro() {
+  document.getElementById('form-login').style.display = 'none'
+  document.getElementById('form-cadastro').style.display = 'block'
+}
+
+function mostrarLogin() {
+  document.getElementById('form-cadastro').style.display = 'none'
+  document.getElementById('form-login').style.display = 'block'
+}
+
+function mostrarMsg(id, txt, tipo) {
+  const el = document.getElementById(id)
+  el.textContent = txt
+  el.className = `login-msg ${tipo}`
+}
+
+// ── INICIALIZAR APP ─────────────────────────────────────────────
+async function iniciarApp() {
+  document.getElementById('tela-login').style.display = 'none'
+  document.getElementById('tela-app').classList.add('ativo')
+  await atualizarUso()
+}
+
+async function atualizarUso() {
+  try {
+    const r = await api('/api/uso')
+    planoAtual = r.plano
+    const planoEl = document.getElementById('topbar-plano')
+    planoEl.textContent = r.plano === 'gratis' ? 'Grátis' : r.plano === 'pro' ? 'Pro' : 'Business'
+    planoEl.className = `topbar-plano ${r.plano !== 'gratis' ? 'pro' : ''}`
+
+    if (r.plano === 'gratis') {
+      const usadas = 10 - r.restantes
+      const pct = (usadas / 10) * 100
+      document.getElementById('uso-texto').textContent = `${usadas}/10 hoje`
+      const fill = document.getElementById('uso-fill')
+      fill.style.width = pct + '%'
+      if (pct >= 80) fill.classList.add('alerta')
+      document.getElementById('topbar-uso').style.display = 'flex'
+      document.getElementById('banner-upgrade').style.display = 'flex'
+    }
+
+    if (planoAtual !== 'gratis') {
+      document.getElementById('export-form').style.display = 'block'
+      document.getElementById('export-bloqueado').style.display = 'none'
+    } else {
+      document.getElementById('export-form').style.display = 'none'
+      document.getElementById('export-bloqueado').style.display = 'block'
+    }
+  } catch(e) {}
+}
+
+// ── API ─────────────────────────────────────────────────────────
+async function api(path) {
+  const r = await fetch(API_URL + path, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  })
+  if (!r.ok) {
+    const d = await r.json()
+    throw d
+  }
+  return r.json()
+}
+
+// ── MUNICÍPIOS ──────────────────────────────────────────────────
+async function carregarMunicipios() {
+  const uf = document.getElementById('f-uf').value
+  const sel = document.getElementById('f-municipio')
+  sel.innerHTML = '<option value="">Carregando...</option>'
+  try {
+    const data = await api(`/api/municipios?uf=${uf}`)
+    sel.innerHTML = '<option value="">Todos</option>'
+    data.forEach(m => {
+      const opt = document.createElement('option')
+      opt.value = m.codigo; opt.textContent = m.descricao
+      sel.appendChild(opt)
+    })
+  } catch(e) {
+    sel.innerHTML = '<option value="">Todos</option>'
+  }
+}
+
+// ── BUSCA ───────────────────────────────────────────────────────
+async function buscar(pagina = 1) {
+  paginaAtual = pagina
+  const btn = document.getElementById('btn-buscar')
+  btn.disabled = true; btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,0.3);border-top-color:white;width:14px;height:14px"></div> Buscando...'
+
+  ultimosFiltros = {
+    razao:     document.getElementById('f-razao').value,
+    cnpj:      document.getElementById('f-cnpj').value.replace(/\D/g,''),
+    uf:        document.getElementById('f-uf').value,
+    municipio: document.getElementById('f-municipio').value,
+    situacao:  document.getElementById('f-situacao').value,
+    cnae:      document.getElementById('f-cnae').value,
+    por_pagina:document.getElementById('f-por-pagina').value,
+  }
+
+  const qs = new URLSearchParams({...ultimosFiltros, pagina}).toString()
+
+  try {
+    const data = await api(`/api/buscar?${qs}`)
+    document.getElementById('alert-limite').classList.remove('visivel')
+    totalPaginas = data.paginas
+    renderResultados(data)
+    await atualizarUso()
+  } catch(e) {
+    if (e.erro === 'limite_atingido') {
+      document.getElementById('alert-limite').classList.add('visivel')
+      document.getElementById('area-resultados').innerHTML = ''
+    }
+  }
+
+  btn.disabled = false
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="white" stroke-width="1.5"/><path d="M9.5 9.5l2.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg> Buscar'
+}
+
+function renderResultados(data) {
+  const area = document.getElementById('area-resultados')
+
+  if (!data.resultados.length) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Nenhum resultado</div><div class="empty-desc">Tente outros filtros</div></div>`
+    return
+  }
+
+  const statusClass = s => {
+    const m = { 'Ativa':'ativa','Baixada':'baixada','Suspensa':'suspensa','Inapta':'inapta' }
+    return 'status-' + (m[s] || 'default')
+  }
+
+  const linhas = data.resultados.map(r => {
+    const cnpj = `${r.cnpj_basico || ''}${r.cnpj_ordem||''}${r.cnpj_dv||''}`
+    const tel = r.telefone1 ? `${r.ddd1||''} ${r.telefone1}` : (planoAtual==='gratis' ? '🔒' : '—')
+    const email = r.email || (planoAtual==='gratis' ? '🔒' : '—')
+    return `
+      <tr onclick="abrirDetalhe('${r.cnpj_basico}')">
+        <td class="td-razao">${r.razao_social||'—'}<small>${r.nome_fantasia||''}</small></td>
+        <td><span style="font-family:monospace;font-size:11px">${cnpj||r.cnpj_basico}</span></td>
+        <td><span class="status-badge ${statusClass(r.situacao_label)}">${r.situacao_label||'—'}</span></td>
+        <td>${r.uf||'—'} ${r.municipio_nome ? '· '+r.municipio_nome : ''}</td>
+        <td>${tel}</td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${email}</td>
+      </tr>`
+  }).join('')
+
+  area.innerHTML = `
+    <div class="results-header">
+      <div class="results-count"><strong>${data.total.toLocaleString('pt-BR')}</strong> empresas encontradas</div>
+      <button class="btn-exportar ${planoAtual==='gratis'?'bloqueado':''}" onclick="exportar()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 10v1.5h10V10M6.5 1.5v7M4 6l2.5 2.5L9 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ${planoAtual==='gratis' ? 'Exportar (Pro)' : 'Exportar CSV'}
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Empresa</th><th>CNPJ</th><th>Situação</th>
+          <th>Localização</th><th>Telefone</th><th>E-mail</th>
+        </tr></thead>
+        <tbody>${linhas}</tbody>
+      </table>
+    </div>
+    ${renderPaginacao(data.pagina, data.paginas)}
+  `
+}
+
+function renderPaginacao(atual, total) {
+  if (total <= 1) return ''
+  let html = '<div class="pagination">'
+  html += `<button class="page-btn" ${atual===1?'disabled':''} onclick="buscar(${atual-1})">‹</button>`
+
+  const inicio = Math.max(1, atual-2)
+  const fim = Math.min(total, atual+2)
+  if (inicio > 1) html += `<button class="page-btn" onclick="buscar(1)">1</button>${inicio>2?'<span style="padding:0 4px;color:var(--muted)">…</span>':''}`
+
+  for (let i = inicio; i <= fim; i++) {
+    html += `<button class="page-btn ${i===atual?'ativo':''}" onclick="buscar(${i})">${i}</button>`
+  }
+
+  if (fim < total) html += `${fim<total-1?'<span style="padding:0 4px;color:var(--muted)">…</span>':''}<button class="page-btn" onclick="buscar(${total})">${total}</button>`
+  html += `<button class="page-btn" ${atual===total?'disabled':''} onclick="buscar(${atual+1})">›</button>`
+  html += '</div>'
+  return html
+}
+
+// ── DETALHE ─────────────────────────────────────────────────────
+async function abrirDetalhe(cnpj_basico) {
+  document.getElementById('modal-nome').textContent = 'Carregando...'
+  document.getElementById('modal-cnpj').textContent = ''
+  document.getElementById('modal-fantasia').textContent = ''
+  document.getElementById('modal-body').innerHTML = '<div class="loading"><div class="spinner"></div> Buscando dados...</div>'
+  document.getElementById('modal-overlay').classList.add('aberto')
+
+  try {
+    const d = await api(`/api/empresa/${cnpj_basico}`)
+    const e = d.empresa
+    const est = d.estabelecimentos[0] || {}
+
+    const cnpj = `${e.cnpj_basico}${est.cnpj_ordem||'0001'}${est.cnpj_dv||'00'}`
+    document.getElementById('modal-cnpj').textContent = `CNPJ ${cnpj}`
+    document.getElementById('modal-nome').textContent = e.razao_social || '—'
+    document.getElementById('modal-fantasia').textContent = est.nome_fantasia || ''
+
+    const lock = v => v || (d.mostra_contato ? '—' : '<span style="display:flex;align-items:center;gap:4px;color:var(--muted);font-size:12px">🔒 Plano Pro</span>')
+
+    const socios = d.socios.map(s => {
+      const ini = (s.nome_socio||'?').split(' ').map(x=>x[0]).slice(0,2).join('')
+      return `<div class="socio-row">
+        <div class="socio-avatar">${ini}</div>
+        <div><div class="socio-nome">${s.nome_socio||'—'}</div><div class="socio-qual">${s.qualificacao||''}</div></div>
+      </div>`
+    }).join('') || '<div style="font-size:13px;color:var(--muted)">Nenhum sócio encontrado</div>'
+
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dados cadastrais</div>
+        <div class="modal-grid">
+          <div class="modal-field"><div class="modal-field-label">Situação</div><div class="modal-field-value">${est.situacao_label||'—'}</div></div>
+          <div class="modal-field"><div class="modal-field-label">Abertura</div><div class="modal-field-value">${est.data_inicio||'—'}</div></div>
+          <div class="modal-field"><div class="modal-field-label">Porte</div><div class="modal-field-value">${e.porte||'—'}</div></div>
+          <div class="modal-field"><div class="modal-field-label">CNAE</div><div class="modal-field-value">${est.cnae_principal||'—'}${d.cnae_descricao?'<br><small style="font-size:11px;color:var(--muted)">'+d.cnae_descricao+'</small>':''}</div></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Contato</div>
+        <div class="modal-grid">
+          <div class="modal-field"><div class="modal-field-label">Telefone</div><div class="modal-field-value">${lock(est.ddd1&&est.telefone1?(est.ddd1+' '+est.telefone1):'')}</div></div>
+          <div class="modal-field"><div class="modal-field-label">E-mail</div><div class="modal-field-value">${lock(est.email)}</div></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Endereço</div>
+        <div class="modal-grid">
+          <div class="modal-field" style="grid-column:1/-1"><div class="modal-field-label">Logradouro</div><div class="modal-field-value">${[est.logradouro,est.numero,est.bairro].filter(Boolean).join(', ')||'—'}</div></div>
+          <div class="modal-field"><div class="modal-field-label">Cidade / UF</div><div class="modal-field-value">${est.municipio_nome||'—'} — ${est.uf||'—'}</div></div>
+          <div class="modal-field"><div class="modal-field-label">CEP</div><div class="modal-field-value">${est.cep||'—'}</div></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Sócios</div>
+        ${socios}
+      </div>
+    `
+  } catch(e) {
+    document.getElementById('modal-body').innerHTML = '<div style="padding:1rem;color:#a32d2d;font-size:13px">Erro ao carregar dados.</div>'
+  }
+}
+
+function fecharModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('aberto')
+  }
+}
+
+// ── EXPORTAR ────────────────────────────────────────────────────
+async function exportar() {
+  if (planoAtual === 'gratis') {
+    window.open('/contratacao.html')
+    return
+  }
+  const qs = new URLSearchParams(ultimosFiltros).toString()
+  window.open(`${API_URL}/api/exportar?${qs}&token=${token}`)
+}
+
+// ── ABAS ────────────────────────────────────────────────────────
+function mostrarAba(nome, btn) {
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('ativo'))
+  btn.classList.add('ativo')
+  document.getElementById('aba-busca').style.display = nome === 'busca' ? 'block' : 'none'
+  document.getElementById('aba-exportar').style.display = nome === 'exportar' ? 'block' : 'none'
+}
+
+// Enter para buscar
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') buscar(1)
+})
+</script>
+</body>
+</html>

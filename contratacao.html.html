@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contratação — Verifirma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #1D9E75;
+  --green-dark: #0F6E56;
+  --green-deeper: #085041;
+  --green-light: #E1F5EE;
+  --green-mid: #9FE1CB;
+  --ink: #0e1512;
+  --ink-2: #1a2820;
+  --paper: #f5faf8;
+  --muted: #6b8a7e;
+  --border: rgba(29,158,117,0.15);
+  --border-solid: #d8ede7;
+  --font-display: 'Helvetica Neue', 'Arial Black', Helvetica, Arial, sans-serif;
+  --font-body: 'Sora', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(245,250,248,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-mark {
+  width: 34px; height: 34px;
+  background: var(--green);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-mark svg { width: 18px; height: 18px; }
+.logo-name { font-family: var(--font-display); font-size: 18px; font-weight: 900; color: var(--ink); letter-spacing: -0.3px; }
+.logo-name span { color: var(--green); }
+
+.nav-right { display: flex; align-items: center; gap: 1.5rem; }
+.nav-right a { font-size: 13px; color: var(--muted); text-decoration: none; }
+.nav-right a:hover { color: var(--ink); }
+.btn-nav {
+  padding: 7px 18px;
+  background: var(--green);
+  color: white !important;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* LAYOUT */
+.page-wrap {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 64px;
+  min-height: 100vh;
+  gap: 0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  padding: 2.5rem 1.5rem 2rem;
+  border-right: 1px solid var(--border-solid);
+  background: white;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-solid); border-radius: 2px; }
+
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  margin-top: 1.5rem;
+}
+
+.sidebar-section-label:first-child { margin-top: 0; }
+
+.sidebar ul { list-style: none; }
+.sidebar ul li a {
+  display: block;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.sidebar ul li a:hover { background: var(--green-light); color: var(--green-deeper); }
+.sidebar ul li a.active { background: var(--green-light); color: var(--green-deeper); font-weight: 500; }
+
+/* MAIN CONTENT */
+.content {
+  padding: 3rem 3.5rem 6rem;
+  max-width: 860px;
+}
+
+/* PAGE HEADER */
+.page-header {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-solid);
+}
+
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+  line-height: 1.05;
+}
+
+.page-desc {
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+/* SECTIONS */
+.doc-section {
+  margin-bottom: 4rem;
+  scroll-margin-top: 80px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--green-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  width: 32px; height: 32px;
+  background: var(--green-light);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.subsection-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+p {
+  font-size: 14px;
+  color: #3a5248;
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+/* INFO CARDS */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+
+.info-card {
+  background: white;
+  border: 1px solid var(--border-solid);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.info-card-icon { font-size: 22px; margin-bottom: 8px; }
+.info-card-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.info-card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* PLAN TOGGLE */
+.plan-toggle {
+  display: inline-flex;
+  background: white;
+  border: 1px solid var(--border-solid);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 1.5rem;
+  gap: 4px;
+}
+
+.toggle-btn {
+  padding: 7px 20px;
+  border: none;
+  border-radius: 7px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background: var(--green);
+  color: white;
+}
+
+.toggle-discount {
+  font-size: 10px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* PLANS TABLE */
+.plans-wrap { overflow-x: auto; margin: 1rem 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-solid);
+}
+
+thead tr {
+  background: var(--ink);
+}
+
+thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-top: 1px solid var(--border-solid);
+  transition: background 0.15s;
+}
+
+tbody tr:hover { background: #f9fdfb; }
+
+tbody td {
+  padding: 11px 16px;
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+.plan-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge-basic { background: #e8f4fd; color: #1a6fa8; }
+.badge-speed { background: #fef3e2; color: #8a5a00; }
+.badge-pro { background: var(--green-light); color: var(--green-deeper); }
+.badge-vip { background: #f0ebff; color: #5b3d9e; }
+.badge-free { background: #f0f0f0; color: #555; }
+
+.price-cell { font-weight: 600; color: var(--ink); }
+.credits-cell { font-family: monospace; font-size: 12px; }
+.limit-cell { color: var(--muted); }
+
+.row-highlight { background: #f0faf6 !important; }
+.row-highlight td { font-weight: 500; }
+
+/* CREDITS TABLE */
+.credits-table thead tr { background: var(--green-deeper); }
+
+.has-cache { color: var(--green-dark); font-weight: 600; font-size: 12px; }
+.no-cache { color: #bbb; font-size: 12px; }
+
+/* CALLOUT */
+.callout {
+  display: flex;
+  gap: 14px;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  margin: 1.25rem 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.callout-info { background: #e8f4fd; border-left: 3px solid #3b9ae1; }
+.callout-warning { background: #fff8e6; border-left: 3px solid #f0a500; }
+.callout-success { background: var(--green-light); border-left: 3px solid var(--green); }
+.callout-danger { background: #fef0ef; border-left: 3px solid #e05c4a; }
+
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-body { color: #2c4a3e; }
+.callout-body strong { color: var(--ink); font-weight: 600; }
+
+/* FEATURE LIST */
+.feature-list { list-style: none; margin: 1rem 0; }
+.feature-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-solid);
+  font-size: 13px;
+  color: #3a5248;
+}
+.feature-list li:last-child { border-bottom: none; }
+.feature-list li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* PAYMENT GRID */
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+
+.payment-card {
+  background: white;
+  border: 1px solid var(--border-solid);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.payment-card:hover { border-color: var(--green); }
+.payment-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.payment-icon { font-size: 22px; }
+.payment-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.payment-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--green-light); color: var(--green-deeper); font-weight: 500; }
+.payment-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* PLAN GRATUITO */
+.free-plan-card {
+  background: white;
+  border: 2px solid var(--green);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 1.5rem 0;
+}
+
+.free-plan-left { flex: 1; }
+.free-plan-price { font-family: var(--font-display); font-size: 3rem; font-weight: 900; color: var(--green); line-height: 1; margin-bottom: 4px; }
+.free-plan-label { font-size: 13px; color: var(--muted); }
+.free-plan-divider { width: 1px; height: 80px; background: var(--border-solid); }
+.free-plan-details { flex: 2; }
+.free-detail-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #3a5248; padding: 5px 0; }
+.free-detail-row svg { color: var(--green); flex-shrink: 0; }
+
+/* HIDDEN PLANS */
+.plans-annual { display: none; }
+.plans-annual.visible { display: block; }
+.plans-monthly.hidden { display: none; }
+
+/* STEP INDICATORS */
+.steps { margin: 1.5rem 0; }
+.step { display: flex; gap: 14px; margin-bottom: 1rem; }
+.step-num {
+  width: 28px; height: 28px;
+  background: var(--green);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-content { flex: 1; }
+.step-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.step-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* FOOTER */
+footer {
+  background: var(--ink);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-logo { font-family: var(--font-display); font-size: 16px; font-weight: 900; color: white; }
+.footer-logo span { color: var(--green-mid); }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .page-wrap { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 2rem 1.25rem 4rem; }
+  .info-grid { grid-template-columns: 1fr; }
+  .payment-grid { grid-template-columns: 1fr; }
+  .free-plan-card { flex-direction: column; gap: 1rem; }
+  .free-plan-divider { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="verifirma-landing.html" class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="11" height="14" rx="2" stroke="white" stroke-width="1.4"/><path d="M4.5 7h6M4.5 10h6M4.5 13h3.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/><circle cx="15" cy="15" r="4" fill="rgba(255,255,255,0.2)"/><path d="M13.2 15l1.2 1.2 2-2" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <span class="logo-name">Veri<span>firma</span></span>
+  </a>
+  <div class="nav-right">
+    <a href="#">Documentação</a>
+    <a href="#">Entrar</a>
+    <a href="#planos" class="btn-nav">Criar conta</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Visão geral</div>
+    <ul>
+      <li><a href="#sobre" class="active">Sobre a plataforma</a></li>
+      <li><a href="#funcionamento">Como funciona</a></li>
+    </ul>
+
+    <div class="sidebar-section-label">Assinaturas</div>
+    <ul>
+      <li><a href="#plano-gratuito">Plano gratuito</a></li>
+      <li><a href="#planos">Planos mensais</a></li>
+      <li><a href="#planos">Planos anuais</a></li>
+    </ul>
+
+    <div class="sidebar-section-label">Créditos e uso</div>
+    <ul>
+      <li><a href="#creditos">O que são créditos</a></li>
+      <li><a href="#custos">Tabela de custos</a></li>
+      <li><a href="#limites">Limite por minuto</a></li>
+    </ul>
+
+    <div class="sidebar-section-label">Pagamento</div>
+    <ul>
+      <li><a href="#pagamento">Formas de pagamento</a></li>
+      <li><a href="#cancelamento">Cancelamento</a></li>
+      <li><a href="#reembolso">Reembolso</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div class="page-eyebrow">Planos e preços</div>
+      <h1 class="page-title">Simples assim.</h1>
+      <p class="page-desc">Escolha o plano certo pro seu uso, pague só o que precisar e cancele quando quiser. Sem contratos longos, sem letras miúdas.</p>
+    </div>
+
+    <!-- SOBRE -->
+    <section class="doc-section" id="sobre">
+      <h2 class="section-title"><div class="section-icon">🏛️</div> Sobre a plataforma</h2>
+
+      <div class="subsection-title">De onde vêm os dados?</div>
+      <p>A Receita Federal disponibiliza publicamente os dados cadastrais de todas as empresas do Brasil. A Verifirma pega esse volume bruto de informação — que chega a dezenas de gigabytes — processa, organiza e entrega de forma rápida e filtrada. Você não precisa lidar com arquivos pesados nem entender o layout da Receita.</p>
+
+      <div class="subsection-title">O que você está pagando?</div>
+      <p>Você paga pela conveniência: pela infraestrutura que mantém os dados atualizados, pela interface que torna a busca instantânea e pelos filtros que economizam horas do seu trabalho. Os dados em si são públicos — a entrega inteligente é o produto.</p>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">Você assina um plano mensal ou anual, recebe créditos todo mês e usa conforme precisa. Sobrou crédito? Ele acumula. Não quer mais? Cancela na hora, sem burocracia.</div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-icon">🗂️</div>
+          <div class="info-card-title">Fonte oficial</div>
+          <div class="info-card-desc">Direto da Receita Federal, Simples Nacional e outras bases do governo.</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">⚖️</div>
+          <div class="info-card-title">100% legal</div>
+          <div class="info-card-desc">Dados públicos, uso legal, em conformidade com a LGPD.</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">🔄</div>
+          <div class="info-card-title">Cancela quando quiser</div>
+          <div class="info-card-desc">Sem fidelidade, sem multa, sem formulário de retenção chato.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="doc-section" id="funcionamento">
+      <h2 class="section-title"><div class="section-icon">⚙️</div> Como funciona</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Você escolhe um plano</div>
+            <div class="step-desc">Todo mês seu saldo de créditos é reabastecido automaticamente. Cada consulta que vai direto na fonte oficial consome créditos — consultas em cache são gratuitas.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Velocidade por plano</div>
+            <div class="step-desc">Cada plano tem um limite de requisições por minuto. Para uso no painel, isso raramente importa. Para integrações e consultas em lote, escolha um plano com limite maior.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Créditos que sobram ficam</div>
+            <div class="step-desc">Não usou tudo? Os créditos passam pro mês seguinte — até o limite de uma recarga mensal. Nada jogado fora enquanto sua assinatura estiver ativa.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">Precisa de mais? É só adicionar</div>
+            <div class="step-desc">Você pode ter mais de um plano ativo ao mesmo tempo. Os créditos e os limites se somam. Quando não precisar mais do plano extra, cancela — sem custo adicional.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANO GRATUITO -->
+    <section class="doc-section" id="plano-gratuito">
+      <h2 class="section-title"><div class="section-icon">🎁</div> Plano gratuito</h2>
+      <p>Crie sua conta e já começa a consultar. Sem colocar cartão, sem prazo de trial, sem pedir nada em troca. O plano gratuito é permanente — existe pra você testar com calma antes de decidir assinar.</p>
+
+      <div class="free-plan-card">
+        <div class="free-plan-left">
+          <div class="free-plan-price">R$0</div>
+          <div class="free-plan-label">pra sempre, sem cartão</div>
+        </div>
+        <div class="free-plan-divider"></div>
+        <div class="free-plan-details">
+          <div class="free-detail-row">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5l4 4 7-7" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            10 consultas por dia
+          </div>
+          <div class="free-detail-row">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5l4 4 7-7" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Dados básicos: razão social, situação, CNAE
+          </div>
+          <div class="free-detail-row">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5l4 4 7-7" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            10 consultas por minuto
+          </div>
+          <div class="free-detail-row">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5l4 4 7-7" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Sem cartão de crédito
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:13px; color: var(--muted);">Bom pra quem consulta de vez em quando — ou pra quem quer experimentar antes de assinar.</p>
+    </section>
+
+    <!-- PLANOS -->
+    <section class="doc-section" id="planos">
+      <h2 class="section-title"><div class="section-icon">📋</div> Planos</h2>
+      <p>Pagamento mensal pra quem quer flexibilidade. Anual pra quem quer economizar 10% e esquecer que tem mensalidade.</p>
+
+      <div class="plan-toggle">
+        <button class="toggle-btn active" onclick="showPlans('monthly', this)">Mensal</button>
+        <button class="toggle-btn" onclick="showPlans('annual', this)">Anual <span class="toggle-discount">-10%</span></button>
+      </div>
+
+      <!-- MENSAIS -->
+      <div class="plans-monthly plans-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Plano</th>
+              <th>Preço</th>
+              <th>Créditos/mês</th>
+              <th>Limite/min</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="plan-badge badge-free">GRÁTIS</span></td><td class="price-cell">R$ 0</td><td class="credits-cell">—</td><td class="limit-cell">10 / min</td></tr>
+            <tr><td><span class="plan-badge badge-basic">BASIC</span> 1.000</td><td class="price-cell">R$ 19,90</td><td class="credits-cell">1.000</td><td class="limit-cell">30 / min</td></tr>
+            <tr><td><span class="plan-badge badge-basic">BASIC</span> 2.500</td><td class="price-cell">R$ 32,90</td><td class="credits-cell">2.500</td><td class="limit-cell">40 / min</td></tr>
+            <tr><td><span class="plan-badge badge-speed">SPEED</span> 60/min</td><td class="price-cell">R$ 32,90</td><td class="credits-cell">60</td><td class="limit-cell">60 / min</td></tr>
+            <tr><td><span class="plan-badge badge-basic">BASIC</span> 5.000</td><td class="price-cell">R$ 49,90</td><td class="credits-cell">5.000</td><td class="limit-cell">50 / min</td></tr>
+            <tr><td><span class="plan-badge badge-speed">SPEED</span> 120/min</td><td class="price-cell">R$ 59,90</td><td class="credits-cell">120</td><td class="limit-cell">120 / min</td></tr>
+            <tr class="row-highlight"><td><span class="plan-badge badge-pro">PRO</span> 10.000</td><td class="price-cell">R$ 84,90</td><td class="credits-cell">10.000</td><td class="limit-cell">60 / min</td></tr>
+            <tr><td><span class="plan-badge badge-speed">SPEED</span> 240/min</td><td class="price-cell">R$ 109,90</td><td class="credits-cell">240</td><td class="limit-cell">240 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 15.000</td><td class="price-cell">R$ 119,90</td><td class="credits-cell">15.000</td><td class="limit-cell">80 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 25.000</td><td class="price-cell">R$ 189,90</td><td class="credits-cell">25.000</td><td class="limit-cell">120 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 50.000</td><td class="price-cell">R$ 359,90</td><td class="credits-cell">50.000</td><td class="limit-cell">180 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 75.000</td><td class="price-cell">R$ 529,90</td><td class="credits-cell">75.000</td><td class="limit-cell">210 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 100.000</td><td class="price-cell">R$ 699,90</td><td class="credits-cell">100.000</td><td class="limit-cell">240 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 150.000</td><td class="price-cell">R$ 1.039,90</td><td class="credits-cell">150.000</td><td class="limit-cell">250 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 250.000</td><td class="price-cell">R$ 1.699,90</td><td class="credits-cell">250.000</td><td class="limit-cell">300 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 500.000</td><td class="price-cell">R$ 3.349,90</td><td class="credits-cell">500.000</td><td class="limit-cell">480 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 750.000</td><td class="price-cell">R$ 4.989,90</td><td class="credits-cell">750.000</td><td class="limit-cell">540 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 1.000.000</td><td class="price-cell">R$ 6.599,90</td><td class="credits-cell">1.000.000</td><td class="limit-cell">600 / min</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ANUAIS -->
+      <div class="plans-annual plans-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Plano</th>
+              <th>Preço anual</th>
+              <th>Créditos/mês</th>
+              <th>Limite/min</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="plan-badge badge-basic">BASIC</span> 1.000</td><td class="price-cell">R$ 214,90</td><td class="credits-cell">1.000</td><td class="limit-cell">30 / min</td></tr>
+            <tr><td><span class="plan-badge badge-basic">BASIC</span> 2.500</td><td class="price-cell">R$ 354,90</td><td class="credits-cell">2.500</td><td class="limit-cell">40 / min</td></tr>
+            <tr><td><span class="plan-badge badge-speed">SPEED</span> 60/min</td><td class="price-cell">R$ 354,90</td><td class="credits-cell">60</td><td class="limit-cell">60 / min</td></tr>
+            <tr><td><span class="plan-badge badge-basic">BASIC</span> 5.000</td><td class="price-cell">R$ 538,90</td><td class="credits-cell">5.000</td><td class="limit-cell">50 / min</td></tr>
+            <tr><td><span class="plan-badge badge-speed">SPEED</span> 120/min</td><td class="price-cell">R$ 646,90</td><td class="credits-cell">120</td><td class="limit-cell">120 / min</td></tr>
+            <tr class="row-highlight"><td><span class="plan-badge badge-pro">PRO</span> 10.000</td><td class="price-cell">R$ 916,90</td><td class="credits-cell">10.000</td><td class="limit-cell">60 / min</td></tr>
+            <tr><td><span class="plan-badge badge-speed">SPEED</span> 240/min</td><td class="price-cell">R$ 1.186,90</td><td class="credits-cell">240</td><td class="limit-cell">240 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 15.000</td><td class="price-cell">R$ 1.294,90</td><td class="credits-cell">15.000</td><td class="limit-cell">80 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 25.000</td><td class="price-cell">R$ 2.050,90</td><td class="credits-cell">25.000</td><td class="limit-cell">120 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 50.000</td><td class="price-cell">R$ 3.878,90</td><td class="credits-cell">50.000</td><td class="limit-cell">180 / min</td></tr>
+            <tr><td><span class="plan-badge badge-pro">PRO</span> 75.000</td><td class="price-cell">R$ 5.714,90</td><td class="credits-cell">75.000</td><td class="limit-cell">210 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 100.000</td><td class="price-cell">R$ 7.558,90</td><td class="credits-cell">100.000</td><td class="limit-cell">240 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 150.000</td><td class="price-cell">R$ 11.230,90</td><td class="credits-cell">150.000</td><td class="limit-cell">250 / min</td></tr>
+            <tr><td><span class="plan-badge badge-vip">VIP</span> 250.000</td><td class="price-cell">R$ 18.358,90</td><td class="credits-cell">250.000</td><td class="limit-cell">300 / min</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warning">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">Dá pra ter <strong>mais de um plano ativo ao mesmo tempo</strong> — os créditos e limites se acumulam. Se cancelar, você fica com acesso até o fim do período que já pagou.</div>
+      </div>
+    </section>
+
+    <!-- CRÉDITOS -->
+    <section class="doc-section" id="creditos">
+      <h2 class="section-title"><div class="section-icon">💳</div> Créditos</h2>
+      <p>Cada consulta que vai direto na fonte oficial consome créditos. Pense neles como o "combustível" das buscas em tempo real. Consultas em cache — dados que já temos armazenados — não consomem nada.</p>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-icon">🌐</div>
+          <div class="info-card-title">Consulta ao vivo</div>
+          <div class="info-card-desc">Vai direto na Receita Federal agora. Dado fresquinho, consome créditos.</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">💾</div>
+          <div class="info-card-title">Cache grátis</div>
+          <div class="info-card-desc">Dados que já temos guardados. Zero créditos — mas pode estar um pouco defasado.</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">📦</div>
+          <div class="info-card-title">Sobrou? Fica.</div>
+          <div class="info-card-desc">Créditos não gastos passam pro mês seguinte. Limite de um refil mensal.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELA DE CUSTOS -->
+    <section class="doc-section" id="custos">
+      <h2 class="section-title"><div class="section-icon">📊</div> Tabela de custos</h2>
+      <p>Quanto cada tipo de consulta custa. Cache sempre é zero — só paga quando busca ao vivo.</p>
+
+      <div class="plans-wrap">
+        <table class="credits-table">
+          <thead>
+            <tr>
+              <th style="width: 55%">Recurso</th>
+              <th>Custo online</th>
+              <th>Cache</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Receita Federal</strong><br><span style="font-size:11px;color:var(--muted)">Dados cadastrais, situação, endereço, CNAEs e sócios</span></td><td class="price-cell">1 crédito</td><td><span class="has-cache">✓ Sim</span></td></tr>
+            <tr><td><strong>Receita Federal (Comprovante)</strong><br><span style="font-size:11px;color:var(--muted)">Comprovante em PDF</span></td><td class="price-cell">1 crédito</td><td><span class="no-cache">— Não</span></td></tr>
+            <tr><td><strong>Simples Nacional</strong><br><span style="font-size:11px;color:var(--muted)">Indicador de opção e datas de inclusão</span></td><td class="price-cell">1 crédito</td><td><span class="has-cache">✓ Sim</span></td></tr>
+            <tr><td><strong>Simples Nacional (Histórico)</strong><br><span style="font-size:11px;color:var(--muted)">Períodos anteriores de opção</span></td><td class="price-cell">1 crédito</td><td><span class="has-cache">✓ Sim</span></td></tr>
+            <tr><td><strong>Simples Nacional (Comprovante)</strong><br><span style="font-size:11px;color:var(--muted)">Comprovante em PDF</span></td><td class="price-cell">1 crédito</td><td><span class="no-cache">— Não</span></td></tr>
+            <tr><td><strong>Cadastro de Contribuintes</strong><br><span style="font-size:11px;color:var(--muted)">Inscrições estaduais por UF</span></td><td class="price-cell">1 crédito</td><td><span class="has-cache">✓ Sim</span></td></tr>
+            <tr><td><strong>SINTEGRA</strong><br><span style="font-size:11px;color:var(--muted)">Inscrições estaduais</span></td><td class="price-cell">1 crédito</td><td><span class="has-cache">✓ Sim</span></td></tr>
+            <tr><td><strong>SUFRAMA</strong><br><span style="font-size:11px;color:var(--muted)">Situação cadastral e incentivos fiscais</span></td><td class="price-cell">1 crédito</td><td><span class="has-cache">✓ Sim</span></td></tr>
+            <tr><td><strong>Geocodificação</strong><br><span style="font-size:11px;color:var(--muted)">Latitude e longitude do endereço</span></td><td class="price-cell">1 crédito</td><td><span class="no-cache">— Não</span></td></tr>
+            <tr><td><strong>Mapa Aéreo</strong><br><span style="font-size:11px;color:var(--muted)">Imagem aérea do estabelecimento</span></td><td class="price-cell">3 créditos</td><td><span class="no-cache">— Não</span></td></tr>
+            <tr><td><strong>Visão da Rua</strong><br><span style="font-size:11px;color:var(--muted)">Foto externa do estabelecimento</span></td><td class="price-cell">10 créditos</td><td><span class="no-cache">— Não</span></td></tr>
+            <tr><td><strong>Pesquisa Avançada</strong><br><span style="font-size:11px;color:var(--muted)">Listas a partir de filtros</span></td><td class="price-cell">1 a cada 10</td><td><span class="no-cache">— Não</span></td></tr>
+            <tr><td><strong>Consulta em Massa</strong><br><span style="font-size:11px;color:var(--muted)">Exportação informando CNPJs</span></td><td class="price-cell">1 a cada 100</td><td><span class="no-cache">— Não</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-success">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>Economize créditos:</strong> quando os dados não precisam estar fresquinhos, use o cache. Funciona bem pra maioria das consultas do dia a dia.</div>
+      </div>
+    </section>
+
+    <!-- LIMITES -->
+    <section class="doc-section" id="limites">
+      <h2 class="section-title"><div class="section-icon">⏱️</div> Limite de uso</h2>
+      <p>Cada plano tem uma velocidade máxima — quantas consultas você pode fazer por minuto. Pra uso normal no painel, você provavelmente nunca vai sentir esse limite. Ele importa mesmo pra quem integra via API.</p>
+
+      <ul class="feature-list">
+        <li>Consultando pelo painel? O limite por minuto praticamente não existe pra você — é tudo pontual.</li>
+        <li>Usando API ou exportando em lote? Aí o limite importa. Se passar, recebe erro 429 e a requisição falha.</li>
+        <li>Com dois planos ativos, os limites se somam. 60/min + 30/min = 90/min disponíveis.</li>
+        <li>Consultando Receita + Simples ao mesmo tempo? Conta como 2 créditos — um por fonte.</li>
+      </ul>
+
+      <div class="callout callout-danger">
+        <div class="callout-icon">🚫</div>
+        <div class="callout-body">Acabou o saldo? As consultas ao vivo param. Cache ainda funciona. Pra retomar, assine um plano complementar ou aguarde o próximo reabastecimento.</div>
+      </div>
+    </section>
+
+    <!-- PAGAMENTO -->
+    <section class="doc-section" id="pagamento">
+      <h2 class="section-title"><div class="section-icon">💰</div> Como pagar</h2>
+
+      <div class="payment-grid">
+        <div class="payment-card">
+          <div class="payment-card-header">
+            <div class="payment-icon">⚡</div>
+            <div>
+              <div class="payment-name">PIX</div>
+              <span class="payment-badge">Ativação imediata</span>
+            </div>
+          </div>
+          <div class="payment-desc">QR Code gerado na hora. Pagou, ativou — sem espera. Antes de vencer, mandamos o novo código por e-mail pra você decidir se renova.</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="payment-card-header">
+            <div class="payment-icon">💳</div>
+            <div>
+              <div class="payment-name">Cartão de crédito</div>
+              <span class="payment-badge">Renovação automática</span>
+            </div>
+          </div>
+          <div class="payment-desc">Pagamento processado pelo Stripe. A Verifirma não guarda nenhum dado do seu cartão. Renova automaticamente — sem precisar lembrar de nada.</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="payment-card-header">
+            <div class="payment-icon">🏦</div>
+            <div>
+              <div class="payment-name">Boleto bancário</div>
+              <span class="payment-badge">Até 24h</span>
+            </div>
+          </div>
+          <div class="payment-desc">Gerado logo após a contratação. Compensa em até 24h úteis. Enviamos o novo boleto 14 dias antes do vencimento pra você não ser pego de surpresa.</div>
+        </div>
+
+        <div class="payment-card">
+          <div class="payment-card-header">
+            <div class="payment-icon">🏢</div>
+            <div>
+              <div class="payment-name">Transferência bancária</div>
+              <span class="payment-badge">Apenas VIP anual</span>
+            </div>
+          </div>
+          <div class="payment-desc">Só pra planos VIP no anual. Fale com a gente pelo suporte antes de contratar — é rápido.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CANCELAMENTO -->
+    <section class="doc-section" id="cancelamento">
+      <h2 class="section-title"><div class="section-icon">🔔</div> Cancelamento e renovação</h2>
+
+      <div class="subsection-title">Quer cancelar?</div>
+      <ul class="feature-list">
+        <li>Cancele a qualquer hora — sem multa, sem formulário longo, sem ligação de retenção.</li>
+        <li>A renovação automática para imediatamente.</li>
+        <li>Seus créditos continuam válidos até o último dia do ciclo já pago. Depois disso, expiram.</li>
+      </ul>
+
+      <div class="subsection-title">Renovação automática</div>
+      <ul class="feature-list">
+        <li>Cartão: renova sozinho na data de vencimento. Você nem percebe.</li>
+        <li>PIX: enviamos o novo QR Code 10 dias antes. Pagou, renovou.</li>
+        <li>Boleto: novo boleto chega 14 dias antes do fim do ciclo.</li>
+        <li>Não quer renovar via PIX ou boleto? Só ignorar a cobrança — sem precisar cancelar.</li>
+      </ul>
+    </section>
+
+    <!-- REEMBOLSO -->
+    <section class="doc-section" id="reembolso">
+      <h2 class="section-title"><div class="section-icon">↩️</div> Política de reembolso</h2>
+
+      <div class="callout callout-info">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body">Assinou, não gostou, quer o dinheiro de volta? Sem problema — <strong>7 dias corridos</strong> pra pedir reembolso total. Depois disso, o pagamento é definitivo.</div>
+      </div>
+
+      <ul class="feature-list">
+        <li>7 dias contados a partir da data de contratação.</li>
+        <li>Vale pra primeira assinatura de cada plano.</li>
+        <li>Manda a solicitação pelo suporte junto com o comprovante de pagamento.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="footer-logo">Veri<span>firma</span></div>
+  <div class="footer-copy">© 2026 Verifirma · Dados públicos da Receita Federal</div>
+</footer>
+
+<script>
+  function showPlans(type, btn) {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (type === 'annual') {
+      document.querySelector('.plans-monthly').classList.add('hidden');
+      document.querySelector('.plans-annual').classList.add('visible');
+    } else {
+      document.querySelector('.plans-monthly').classList.remove('hidden');
+      document.querySelector('.plans-annual').classList.remove('visible');
+    }
+  }
+
+  const links = document.querySelectorAll('.sidebar a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(l => {
+          l.classList.remove('active');
+          if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+        });
+      }
+    });
+  }, { threshold: 0.4, rootMargin: '-80px 0px -60% 0px' });
+
+  document.querySelectorAll('.doc-section[id]').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

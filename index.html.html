@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifirma — Dados empresariais em segundos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1D9E75;
+    --green-dark: #0F6E56;
+    --green-deeper: #085041;
+    --green-light: #E1F5EE;
+    --green-mid: #9FE1CB;
+    --ink: #0e1512;
+    --ink-2: #1a2820;
+    --paper: #f5faf8;
+    --muted: #6b8a7e;
+    --border: rgba(29,158,117,0.15);
+    --font-display: 'Helvetica Neue', 'Arial Black', Helvetica, Arial, sans-serif;
+    --font-body: 'Sora', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(245,250,248,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--green);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-mark svg { width: 20px; height: 20px; }
+
+  .logo-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-name span { color: var(--green); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .btn-nav {
+    padding: 8px 20px;
+    background: var(--green);
+    color: white !important;
+    border-radius: 8px;
+    font-weight: 500 !important;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .btn-nav:hover { background: var(--green-dark) !important; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 7rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(29,158,117,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(159,225,203,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(29,158,117,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(29,158,117,0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-light);
+    color: var(--green-deeper);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(29,158,117,0.2);
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-title .accent { color: var(--green); }
+
+  .hero-title .underline-green {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-title .underline-green::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 2px;
+    width: 100%; height: 4px;
+    background: var(--green-mid);
+    border-radius: 2px;
+    z-index: -1;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    max-width: 440px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    padding: 14px 28px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(29,158,117,0.3);
+  }
+
+  .btn-ghost {
+    padding: 14px 24px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-ghost:hover { border-color: var(--green); color: var(--green-dark); }
+
+  .hero-note {
+    margin-top: 1rem;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* HERO CARD */
+  .hero-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 60px rgba(15,110,86,0.10);
+    position: relative;
+    animation: floatCard 5s ease-in-out infinite;
+  }
+
+  @keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #e8faf3;
+    color: #0a7a52;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .status-dot { width: 5px; height: 5px; background: #1D9E75; border-radius: 50%; }
+
+  .card-cnpj {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .card-company {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .card-fantasy {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .card-field {
+    background: var(--paper);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .card-field-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .card-field-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .card-locked {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--green-light), #d4f0e5);
+    border: 1px dashed rgba(29,158,117,0.3);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  .card-locked span {
+    font-size: 12px;
+    color: var(--green-dark);
+    font-weight: 500;
+  }
+
+  .card-socios {
+    margin-top: 10px;
+  }
+
+  .card-socios-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .socio-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-top: 1px solid #f5f5f5;
+  }
+
+  .socio-avatar {
+    width: 28px; height: 28px;
+    background: var(--green-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green-dark);
+    flex-shrink: 0;
+  }
+
+  .socio-name { font-size: 12px; color: var(--ink); font-weight: 500; }
+  .socio-qual { font-size: 11px; color: var(--muted); }
+
+  /* STATS */
+  .stats-bar {
+    background: var(--ink);
+    padding: 2rem;
+  }
+
+  .stats-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--green-mid);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* FEATURES */
+  .section {
+    padding: 6rem 2rem;
+  }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    max-width: 600px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .feature-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--green-mid));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(29,158,117,0.12); }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--green-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 20px;
+  }
+
+  .feature-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* PRICING */
+  .pricing-section {
+    background: var(--ink-2);
+    padding: 6rem 2rem;
+  }
+
+  .pricing-section .section-eyebrow { color: var(--green-mid); }
+  .pricing-section .section-title { color: white; }
+  .pricing-section .section-sub { color: rgba(255,255,255,0.5); }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .plan-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    transition: transform 0.25s;
+  }
+
+  .plan-card:hover { transform: translateY(-4px); }
+
+  .plan-card.featured {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .plan-popular {
+    position: absolute;
+    top: -12px; left: 50%; transform: translateX(-50%);
+    background: white;
+    color: var(--green-deeper);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .plan-card.featured .plan-name { color: white; }
+
+  .plan-price {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .plan-price-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 1.5rem;
+  }
+
+  .plan-card.featured .plan-price-sub { color: rgba(255,255,255,0.75); }
+
+  .plan-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.25rem;
+  }
+
+  .plan-card.featured .plan-divider { border-color: rgba(255,255,255,0.25); }
+
+  .plan-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .plan-card.featured .plan-feature { color: rgba(255,255,255,0.9); }
+
+  .plan-check {
+    width: 16px; height: 16px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 9px;
+    color: white;
+  }
+
+  .plan-card.featured .plan-check { background: rgba(255,255,255,0.3); }
+
+  .plan-feature.off { opacity: 0.3; }
+  .plan-feature.off .plan-check { background: transparent; border: 1px solid rgba(255,255,255,0.2); }
+
+  .plan-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .plan-btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+  }
+
+  .plan-btn-outline:hover { background: rgba(255,255,255,0.08); }
+
+  .plan-btn-solid {
+    background: white;
+    border: none;
+    color: var(--green-deeper);
+    font-weight: 600;
+  }
+
+  .plan-btn-solid:hover { background: var(--green-light); }
+
+  /* CTA */
+  .cta-section {
+    padding: 7rem 2rem;
+    text-align: center;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(29,158,117,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-sub {
+    font-size: 17px;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    padding: 2.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: white; }
+  .footer-logo span { color: var(--green-mid); }
+
+  .footer-copy { font-size: 13px; color: rgba(255,255,255,0.3); }
+
+  /* SEARCH BAR */
+  .search-demo {
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-demo:focus-within {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.1);
+  }
+
+  .search-demo input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+  }
+
+  .search-demo input::placeholder { color: var(--muted); }
+
+  .search-btn {
+    padding: 6px 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-card { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .plans-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    nav .nav-links { display: none; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="11" height="14" rx="2" stroke="white" stroke-width="1.4"/>
+        <path d="M4.5 7h6M4.5 10h6M4.5 13h3.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="15" cy="15" r="4" fill="rgba(255,255,255,0.2)"/>
+        <path d="M13.2 15l1.2 1.2 2-2" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="logo-name">Veri<span>firma</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#funcionalidades">Funcionalidades</a></li>
+    <li><a href="#planos">Planos</a></li>
+    <li><a href="#" style="color: var(--muted)">Entrar</a></li>
+    <li><a href="#planos" class="btn-nav">Começar grátis</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Dados da Receita Federal em tempo real
+      </div>
+      <h1 class="hero-title">
+        Consulte qualquer<br>
+        <span class="underline-green">empresa</span> do<br>
+        Brasil <span class="accent">agora.</span>
+      </h1>
+      <p class="hero-sub">
+        Acesse dados de mais de 50 milhões de CNPJs cadastrados. Filtre por segmento, cidade, situação cadastral e exporte o que precisar.
+      </p>
+      <div class="hero-ctas">
+        <a href="#planos" class="btn-primary">
+          Consultar grátis
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#funcionalidades" class="btn-ghost">Ver funcionalidades</a>
+      </div>
+      <div class="hero-note">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5a5.5 5.5 0 1 0 0 11A5.5 5.5 0 0 0 7 1.5z" stroke="#1D9E75" stroke-width="1.2"/><path d="M7 5v3l1.5 1.5" stroke="#1D9E75" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Sem cartão de crédito · 5 consultas grátis por dia
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="search-demo">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#6b8a7e" stroke-width="1.5"/><path d="M11 11l2.5 2.5" stroke="#6b8a7e" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Digite um CNPJ ou razão social..." value="12.345.678/0001-90" readonly>
+        <button class="search-btn">Buscar</button>
+      </div>
+
+      <div class="card-header">
+        <div class="card-status"><div class="status-dot"></div> Ativa</div>
+        <div class="card-cnpj">12.345.678/0001-90</div>
+      </div>
+
+      <div class="card-company">Tecnologia Exemplo S.A.</div>
+      <div class="card-fantasy">Nome fantasia: TechEx Brasil</div>
+
+      <div class="card-grid">
+        <div class="card-field">
+          <div class="card-field-label">Abertura</div>
+          <div class="card-field-value">12/03/2015</div>
+        </div>
+        <div class="card-field">
+          <div class="card-field-label">Porte</div>
+          <div class="card-field-value">Médio porte</div>
+        </div>
+        <div class="card-field">
+          <div class="card-field-label">CNAE</div>
+          <div class="card-field-value">6201-5/01</div>
+        </div>
+        <div class="card-field">
+          <div class="card-field-label">UF</div>
+          <div class="card-field-value">São Paulo – SP</div>
+        </div>
+      </div>
+
+      <div class="card-socios">
+        <div class="card-socios-label">Sócios</div>
+        <div class="socio-row">
+          <div class="socio-avatar">JS</div>
+          <div>
+            <div class="socio-name">João da Silva</div>
+            <div class="socio-qual">Sócio-administrador</div>
+          </div>
+        </div>
+        <div class="socio-row">
+          <div class="socio-avatar">MC</div>
+          <div>
+            <div class="socio-name">Maria Costa</div>
+            <div class="socio-qual">Sócia</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-locked">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="6" width="8" height="6" rx="1.5" stroke="#0F6E56" stroke-width="1.3"/><path d="M5 6V4.5a2 2 0 0 1 4 0V6" stroke="#0F6E56" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Telefone, email e exportação CSV no plano Pro</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-number">50M+</div>
+      <div class="stat-label">CNPJs cadastrados</div>
+    </div>
+    <div>
+      <div class="stat-number">99,9%</div>
+      <div class="stat-label">Disponibilidade</div>
+    </div>
+    <div>
+      <div class="stat-number">&lt; 1s</div>
+      <div class="stat-label">Tempo de resposta</div>
+    </div>
+    <div>
+      <div class="stat-number">LGPD</div>
+      <div class="stat-label">Dados em conformidade</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="funcionalidades">
+  <div class="section-inner">
+    <div class="section-eyebrow">Funcionalidades</div>
+    <h2 class="section-title">Tudo que você precisa sobre uma empresa</h2>
+    <p class="section-sub">Da situação cadastral ao quadro de sócios, os dados certos na hora certa.</p>
+
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Consulta instantânea</div>
+        <div class="feature-desc">Busque por CNPJ, razão social ou nome fantasia e obtenha resultados em menos de 1 segundo.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.1s">
+        <div class="feature-icon">🗂️</div>
+        <div class="feature-title">Filtros avançados</div>
+        <div class="feature-desc">Filtre por CNAE, cidade, UF, situação cadastral e porte da empresa. Encontre exatamente o que precisa.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.2s">
+        <div class="feature-icon">📤</div>
+        <div class="feature-title">Exportar CSV</div>
+        <div class="feature-desc">Exporte listas completas com telefone, email e endereço para usar no seu CRM ou planilha.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.3s">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title">Quadro societário</div>
+        <div class="feature-desc">Veja todos os sócios, suas qualificações e participações diretamente na consulta.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.4s">
+        <div class="feature-icon">📍</div>
+        <div class="feature-title">Dados de contato</div>
+        <div class="feature-desc">Acesse telefone, email e endereço completo das empresas cadastrados na Receita Federal.</div>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay: 0.5s">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">API de acesso</div>
+        <div class="feature-desc">Integre os dados diretamente no seu sistema via API RESTful. Documentação clara e completa.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="planos">
+  <div class="section-inner" style="text-align: center;">
+    <div class="section-eyebrow">Planos</div>
+    <h2 class="section-title" style="margin: 0 auto 1rem; max-width: 100%;">Simples. Sem surpresas.</h2>
+    <p class="section-sub" style="margin: 0 auto 3rem;">Comece grátis, escale quando precisar.</p>
+
+    <div class="plans-grid">
+      <div class="plan-card fade-up">
+        <div class="plan-name">Grátis</div>
+        <div class="plan-price">R$0</div>
+        <div class="plan-price-sub">para sempre</div>
+        <hr class="plan-divider">
+        <div class="plan-feature"><div class="plan-check">✓</div>5 consultas por dia</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Dados básicos da empresa</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Situação cadastral</div>
+        <div class="plan-feature off"><div class="plan-check"></div>Exportar CSV</div>
+        <div class="plan-feature off"><div class="plan-check"></div>Filtros avançados</div>
+        <div class="plan-feature off"><div class="plan-check"></div>Telefone e email</div>
+        <a href="#" class="plan-btn plan-btn-outline">Criar conta grátis</a>
+      </div>
+
+      <div class="plan-card featured fade-up" style="transition-delay: 0.1s">
+        <div class="plan-popular">Mais popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">R$49</div>
+        <div class="plan-price-sub">por mês</div>
+        <hr class="plan-divider">
+        <div class="plan-feature"><div class="plan-check">✓</div>Consultas ilimitadas</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Todos os dados da empresa</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Filtros por CNAE e cidade</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Exportar CSV ilimitado</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Telefone e email</div>
+        <div class="plan-feature off"><div class="plan-check"></div>Acesso via API</div>
+        <a href="#" class="plan-btn plan-btn-solid">Assinar Pro</a>
+      </div>
+
+      <div class="plan-card fade-up" style="transition-delay: 0.2s">
+        <div class="plan-name">Business</div>
+        <div class="plan-price">R$97</div>
+        <div class="plan-price-sub">por mês</div>
+        <hr class="plan-divider">
+        <div class="plan-feature"><div class="plan-check">✓</div>Tudo do Pro</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Acesso via API</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Múltiplos usuários</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Histórico de consultas</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Suporte prioritário</div>
+        <div class="plan-feature"><div class="plan-check">✓</div>Webhooks</div>
+        <a href="#" class="plan-btn plan-btn-outline">Assinar Business</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <h2 class="cta-title">Pronto para consultar<br>qualquer empresa?</h2>
+  <p class="cta-sub">Comece agora, sem cartão de crédito.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-primary">
+      Criar conta grátis
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#planos" class="btn-ghost">Ver planos</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Veri<span>firma</span></div>
+  <div class="footer-copy">© 2026 Verifirma · Dados da Receita Federal</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
