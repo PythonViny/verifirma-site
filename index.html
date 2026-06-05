@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verifirma — Dados empresariais em segundos</title>
@@ -1019,10 +1020,6 @@
         <div class="plan-feature"><div class="plan-check">✓</div>Suporte prioritário</div>
         <div class="plan-feature"><div class="plan-check">✓</div>Webhooks</div>
         <a href="#" class="plan-btn plan-btn-outline">Assinar Business</a>
-      <div id="tela-app" style="display:none;">
-        <div id="export-form">...</div>
-        <div id="export-bloqueado">...</div>
-        </div>
       </div>
     </div>
   </div>
@@ -1048,7 +1045,10 @@
 </footer>
 
 <script>
-  // 1. Configuração do Intersection Observer (Já está ótimo)
+  // Inicialização do Supabase (Substitua pelos seus dados reais)
+  const sb = supabase.createClient('SUA_URL_SUPABASE', 'SUA_ANON_KEY');
+
+  // Observer existente...
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -1057,25 +1057,13 @@
       }
     });
   }, { threshold: 0.12 });
-
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // 2. Lógica de autenticação e App
-  // Certifique-se de ter o script do Supabase carregado no seu <head>
-  // const sb = supabase.createClient('URL', 'KEY'); 
-
+  // Lógica corrigida
   window.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      
-      if (session) {
-        await iniciarApp();
-      } else {
-        console.log("Usuário não logado");
-        // Ocultar elementos do app se necessário, mas garanta que eles existam no HTML
-      }
-    } catch (error) {
-      console.error("Erro na inicialização:", error);
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      iniciarApp();
     }
   });
 
@@ -1083,29 +1071,32 @@
     const telaApp = document.getElementById('tela-app');
     if (telaApp) telaApp.style.display = 'block';
     
+    // Oculta a Landing Page se quiser que o app substitua a página
+    // document.querySelector('.hero').style.display = 'none'; 
+    
     await atualizarUso();
   }
 
   async function atualizarUso() {
     try {
-      // Exemplo da sua lógica de planos
-      const { data: plano } = await sb.from('perfis').select('plano').single();
+      const { data: { user } } = await sb.auth.getUser();
+      const { data: perfil } = await sb.from('perfis').select('plano').eq('id', user.id).single();
       
       const exportForm = document.getElementById('export-form');
       const exportBloqueado = document.getElementById('export-bloqueado');
 
-      if (plano !== 'gratis' && exportForm && exportBloqueado) {
+      if (perfil?.plano !== 'gratis') {
         exportForm.style.display = 'block';
-        exportBloqueado.style.display = 'none';
-      } else if (exportForm && exportBloqueado) {
-        exportForm.style.display = 'none';
+      } else {
         exportBloqueado.style.display = 'block';
       }
-    } catch(e) { 
-      console.error("Erro ao atualizar uso:", e); 
-    }
+    } catch(e) { console.error(e); }
   }
 </script>
+ <div id="tela-app" style="display:none;">
+        <div id="export-form">...</div>
+        <div id="export-bloqueado">...</div>
+        </div>
 
 </body>
 </html>
