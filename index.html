@@ -1054,6 +1054,27 @@
   }, { threshold: 0.12 });
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+ // Verifica estado do usuário ao carregar a página
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    token = session.access_token;
+    await iniciarApp();
+  } else {
+    // Se não houver sessão, garante que a tela de login esteja visível
+    document.getElementById('tela-login').style.display = 'flex';
+  }
+});
+
+// Ajuste na sua função iniciarApp para garantir o display correto
+async function iniciarApp() {
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('tela-app').classList.add('ativo');
+  
+  // Aqui você chama suas funções de busca/uso se necessário
+  await atualizarUso();
+}
 </script>
 
 </body>
