@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verifirma — Dados empresariais em segundos</title>
@@ -1045,10 +1044,6 @@
 </footer>
 
 <script>
-  // Inicialização do Supabase (Substitua pelos seus dados reais)
-  const sb = supabase.createClient('SUA_URL_SUPABASE', 'SUA_ANON_KEY');
-
-  // Observer existente...
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -1057,46 +1052,9 @@
       }
     });
   }, { threshold: 0.12 });
+
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-  // Lógica corrigida
-  window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) {
-      iniciarApp();
-    }
-  });
-
-  async function iniciarApp() {
-    const telaApp = document.getElementById('tela-app');
-    if (telaApp) telaApp.style.display = 'block';
-    
-    // Oculta a Landing Page se quiser que o app substitua a página
-    // document.querySelector('.hero').style.display = 'none'; 
-    
-    await atualizarUso();
-  }
-
-  async function atualizarUso() {
-    try {
-      const { data: { user } } = await sb.auth.getUser();
-      const { data: perfil } = await sb.from('perfis').select('plano').eq('id', user.id).single();
-      
-      const exportForm = document.getElementById('export-form');
-      const exportBloqueado = document.getElementById('export-bloqueado');
-
-      if (perfil?.plano !== 'gratis') {
-        exportForm.style.display = 'block';
-      } else {
-        exportBloqueado.style.display = 'block';
-      }
-    } catch(e) { console.error(e); }
-  }
 </script>
- <div id="tela-app" style="display:none;">
-        <div id="export-form">...</div>
-        <div id="export-bloqueado">...</div>
-        </div>
 
 </body>
 </html>
