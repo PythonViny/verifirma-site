@@ -1019,6 +1019,10 @@
         <div class="plan-feature"><div class="plan-check">✓</div>Suporte prioritário</div>
         <div class="plan-feature"><div class="plan-check">✓</div>Webhooks</div>
         <a href="#" class="plan-btn plan-btn-outline">Assinar Business</a>
+      <div id="tela-app" style="display:none;">
+        <div id="export-form">...</div>
+        <div id="export-bloqueado">...</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1044,6 +1048,7 @@
 </footer>
 
 <script>
+  // 1. Configuração do Intersection Observer (Já está ótimo)
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -1055,26 +1060,51 @@
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
- // Verifica estado do usuário ao carregar a página
-window.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    token = session.access_token;
-    await iniciarApp();
-  } else {
-    // Se não houver sessão, garante que a tela de login esteja visível
-    document.getElementById('tela-login').style.display = 'flex';
-  }
-});
+  // 2. Lógica de autenticação e App
+  // Certifique-se de ter o script do Supabase carregado no seu <head>
+  // const sb = supabase.createClient('URL', 'KEY'); 
 
-// Ajuste na sua função iniciarApp para garantir o display correto
-async function iniciarApp() {
-  document.getElementById('tela-login').style.display = 'none';
-  document.getElementById('tela-app').classList.add('ativo');
-  
-  // Aqui você chama suas funções de busca/uso se necessário
-  await atualizarUso();
-}
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      
+      if (session) {
+        await iniciarApp();
+      } else {
+        console.log("Usuário não logado");
+        // Ocultar elementos do app se necessário, mas garanta que eles existam no HTML
+      }
+    } catch (error) {
+      console.error("Erro na inicialização:", error);
+    }
+  });
+
+  async function iniciarApp() {
+    const telaApp = document.getElementById('tela-app');
+    if (telaApp) telaApp.style.display = 'block';
+    
+    await atualizarUso();
+  }
+
+  async function atualizarUso() {
+    try {
+      // Exemplo da sua lógica de planos
+      const { data: plano } = await sb.from('perfis').select('plano').single();
+      
+      const exportForm = document.getElementById('export-form');
+      const exportBloqueado = document.getElementById('export-bloqueado');
+
+      if (plano !== 'gratis' && exportForm && exportBloqueado) {
+        exportForm.style.display = 'block';
+        exportBloqueado.style.display = 'none';
+      } else if (exportForm && exportBloqueado) {
+        exportForm.style.display = 'none';
+        exportBloqueado.style.display = 'block';
+      }
+    } catch(e) { 
+      console.error("Erro ao atualizar uso:", e); 
+    }
+  }
 </script>
 
 </body>
